@@ -1,11 +1,10 @@
 class RecipeSearchFormPresenter
   def initialize(search_params = {})
     @search_params = search_params
-    @tags = Tag.order(:name)
   end
 
   def tags
-    @tags.map { |tag| [tag.name, tag.id] }
+    Tag.order(:name).map { |tag| [tag.name, tag.id] }
   end
 
   def budgets
