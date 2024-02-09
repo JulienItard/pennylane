@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h1><%= @recipe.name %></h1>
+
+  <% if @recipe.image.present? %>
+    <%= image_tag @recipe.image, class: "img-fluid rounded" %>
+  <% else %>
+    <%= image_tag "https://via.placeholder.com/300x200", class: "img-fluid rounded" %>
+  <% end %>
+
+  <ul>
+    <li><strong>Nombre de personnes :</strong> <%= @recipe.people_quantity %></li>
+    <li><strong>Temps de préparation :</strong> <%= ChronicDuration.output(@recipe.prep_time, :format => :short) %></li>
+    <li><strong>Temps de cuisson :</strong> <%= ChronicDuration.output(@recipe.cook_time, :format => :short) %></li>
+    <li><strong>Temps total :</strong> <%= ChronicDuration.output(@recipe.total_time, :format => :short) %></li>
+    <li><strong>Note :</strong> <%= number_with_precision(@recipe.rate, precision: 2, strip_insignificant_zeros: true) %> / 5</li>
+    <li><strong>Nombre de commentaires :</strong> <%= @recipe.nb_comments %></li>
+    <li><strong>Auteur :</strong> <%= @recipe.author %></li>
+    <li><strong>Astuce de l'auteur :</strong> <%= @recipe.author_tip %></li>
+  </ul>
+
+  <% if @recipe.ingredients.any? %>
+    <h2>Ingrédients</h2>
+    <ul>
+      <% @recipe.ingredients.each do |ingredient| %>
+        <li><%= ingredient.name %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+
+  <% if @recipe.tags.any? %>
+    <h2>Tags</h2>
+    <ul>
+      <% @recipe.tags.each do |tag| %>
+        <li><%= tag.name %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <%= link_to 'Retour recherche', search_recipes_path, class: "btn btn-primary" %>
+</div>

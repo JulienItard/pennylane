@@ -1,0 +1,77 @@
+<%= form_with(url: search_recipes_path, method: :get, local: true, class: "row g-3") do |f| %>
+  <div class="col-md-6">
+    <%= f.label :tag_ids, "Catégories", class: "form-label" %>
+    <%= f.collection_select :tag_ids, @recipe_search_form_presenter.tags, :last, :first, { include_blank: true, selected: @recipe_search_form_presenter.selected_tags }, { multiple: true, class: "form-select" } %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :name, "Nom de la recette", class: "form-label" %>
+    <%= f.text_field :name, value: @recipe_search_form_presenter.selected_name, class: "form-control" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :ingredient_names, "Ingrédients", class: "form-label" %>
+    <%= f.text_field :ingredient_names, value: @recipe_search_form_presenter.selected_ingredient_names, class: "form-control" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :budget, "Budget", class: "form-label" %>
+    <%= f.select :budget, @recipe_search_form_presenter.budgets, { include_blank: true, selected: @recipe_search_form_presenter.selected_budget }, class: "form-select" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :difficulty, "Difficulté", class: "form-label" %>
+    <%= f.select :difficulty, @recipe_search_form_presenter.difficulties, { include_blank: true, selected: @recipe_search_form_presenter.selected_difficulty }, class: "form-select" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :total_time, "Temps de préparation max. (minutes)", class: "form-label" %>
+    <%= f.number_field :total_time, value: @recipe_search_form_presenter.selected_total_time, min: 0, step: 10, class: "form-control" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= f.label :sort_by, "Tri des résultats", class: "form-label" %>
+    <%= f.select :sort_by, @recipe_search_form_presenter.sort_by, { include_blank: true, selected: @recipe_search_form_presenter.selected_sort_by }, class: "form-select" %>
+  </div>
+
+  <div class="col-12">
+    <%= f.submit "Recherche", class: "btn btn-success" %>
+  </div>
+<% end %>
+
+<div class="row row-cols-1 row-cols-md-4 g-4 mt-4">
+  <% @recipes.each do |recipe| %>
+    <div class="col">
+      <div class="card h-100">
+        <% if recipe.image.present? %>
+          <%= image_tag recipe.image, class: "card-img-top" %>
+        <% else %>
+          <%= image_tag "https://via.placeholder.com/300x200", class: "card-img-top" %>
+        <% end %>
+
+        <div class="card-body">
+          <h5 class="card-title"><%= recipe.name %></h5>
+        </div>
+
+        <!-- use decorator ? -->
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Note :
+            <% if recipe.rate %>
+              <%= number_with_precision(recipe.rate, precision: 2, strip_insignificant_zeros: true) %> / 5
+            <% else %>
+            aucune
+            <% end %>
+          </li>
+          <li class="list-group-item">Nombre de commentaires : <%= recipe.nb_comments %></li>
+          <li class="list-group-item">Temps de préparation : <%= ChronicDuration.output(recipe.total_time, :format => :short) %></li>
+        </ul>
+
+        <div class="card-body">
+          <%= link_to "Voir la recette", recipe_path(recipe), class: "card-link btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= paginate @recipes %>
